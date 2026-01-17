@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Text, useInput } from 'ink'
 
 interface InputProps {
@@ -20,6 +20,12 @@ export function Input({
 }: InputProps) {
   const [value, setValue] = useState(defaultValue)
   const [cursorPosition, setCursorPosition] = useState(defaultValue.length)
+
+  // 当 defaultValue 变化时同步更新
+  useEffect(() => {
+    setValue(defaultValue)
+    setCursorPosition(defaultValue.length)
+  }, [defaultValue])
 
   useInput((input, key) => {
     if (key.return) {

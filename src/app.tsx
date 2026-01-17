@@ -27,9 +27,9 @@ const initialConfig: AppConfig = {
   packageName: '',
   adDependencies: initialAdDependencies,
   signing: {
-    keystorePath: '',
+    keystorePath: 'release.keystore',
     keystorePassword: '',
-    keyAlias: '',
+    keyAlias: 'release',
     keyPassword: '',
   },
 }
@@ -202,9 +202,14 @@ export function App() {
       {step === 'input-signing' && (
         <Input
           label={
-            signingStep === 0 ? 'keystore 路径' :
+            signingStep === 0 ? 'keystore 文件名（将生成到项目根目录）' :
             signingStep === 1 ? 'keystore 密码' :
             signingStep === 2 ? 'key 别名' : 'key 密码'
+          }
+          defaultValue={
+            signingStep === 0 ? config.signing.keystorePath :
+            signingStep === 1 ? config.signing.keystorePassword :
+            signingStep === 2 ? config.signing.keyAlias : config.signing.keyPassword
           }
           isPassword={signingStep === 1 || signingStep === 3}
           onSubmit={handleSigningInput}

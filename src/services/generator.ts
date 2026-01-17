@@ -4,10 +4,17 @@ import { fileURLToPath } from 'url'
 import type { AppConfig } from '../types.js'
 import { requiredDependencies, adDependencies, moduleDependencies } from '../config/dependencies.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+// 获取当前脚本所在目录
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// SDK 模板路径 (相对于项目根目录)
-const SDK_TEMPLATE_PATH = path.resolve(__dirname, '../../Android-uni-app-x-SDK@14196-4.87/uniappxnativepackage')
+// SDK 模板路径 (相对于 anx 安装目录)
+// 通过 import.meta.url 定位，确保全局安装后也能找到
+function getSDKTemplatePath(): string {
+  // dist/index.js -> 上1级到项目根目录
+  const projectRoot = path.resolve(__dirname, '..')
+  return path.join(projectRoot, 'Android-uni-app-x-SDK@14196-4.87/uniappxnativepackage')
+}
 
 export async function generateProject(config: AppConfig): Promise<void> {
   if (!config.projectInfo) {
@@ -16,14 +23,15 @@ export async function generateProject(config: AppConfig): Promise<void> {
 
   const { projectInfo, packageName, signing, adDependencies: selectedAds, hbuilderxPath } = config
   const outputDir = path.resolve(process.cwd(), projectInfo.id)
+  const sdkTemplatePath = getSDKTemplatePath()
 
   // 1. 检查 SDK 模板是否存在
-  if (!await fs.pathExists(SDK_TEMPLATE_PATH)) {
-    throw new Error(`找不到 SDK 模板: ${SDK_TEMPLATE_PATH}`)
+  if (!await fs.pathExists(sdkTemplatePath)) {
+    throw new Error(`找不到 SDK 模板: ${sdkTemplatePath}`)
   }
 
   // 2. 复制 SDK 模板到输出目录
-  await fs.copy(SDK_TEMPLATE_PATH, outputDir, {
+  await fs.copy(sdkTemplatePath, outputDir, {
     filter: (src) => {
       // 排除 .DS_Store 和 .git 文件
       const basename = path.basename(src)

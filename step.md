@@ -174,5 +174,49 @@ anx/
 └── tsconfig.json
 ```
 
-1. 如何全局运行呢，如何打包
-2. mac和window都兼容吗
+---
+
+## 常见问题
+
+### 1. 如何全局运行？如何打包？
+
+**打包：**
+```bash
+pnpm build        # 构建到 dist/index.js
+```
+
+**全局安装（本地测试）：**
+```bash
+npm link          # 创建全局软链接
+# 或
+pnpm link --global
+```
+
+安装后可在任意目录运行：
+```bash
+anx
+```
+
+**发布到 npm：**
+```bash
+npm publish       # 发布到 npm
+npm install -g anx  # 其他人安装
+```
+
+### 2. Mac 和 Windows 都兼容吗？
+
+**是的，完全兼容！**
+
+| 组件 | 兼容性 |
+|------|--------|
+| Node.js 运行时 | ✅ 跨平台 |
+| Ink (终端 UI) | ✅ 跨平台 |
+| fs-extra 文件操作 | ✅ 跨平台 |
+| `path` 模块 | ✅ 自动处理路径分隔符 |
+
+**已处理的兼容性问题：**
+- Git Bash (MINGW64) 路径格式：`/d/workspace/...` → `D:\workspace\...`
+- 使用 `path.join()` 确保路径分隔符正确
+
+1. keystore 路径，输入完后，到keystore 密码时把keystore 路径的值也带过了？后面的key 别名和key密码也是
+2. 还有keystore生成的路径，直接就是生成模版项目的根目录就行了，只需要我输入命名就行
