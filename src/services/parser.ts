@@ -8,9 +8,11 @@ import type { ProjectInfo } from '../types.js'
  */
 function normalizePath(inputPath: string): string {
   // 处理 Git Bash 路径格式: /d/... 或 /D/...
-  if (process.platform === 'win32' && /^\/[a-zA-Z]\//.test(inputPath)) {
-    const driveLetter = inputPath[1].toUpperCase()
-    return `${driveLetter}:${inputPath.slice(2).replace(/\//g, '\\')}`
+  const gitBashMatch = inputPath.match(/^\/([a-zA-Z])\/(.*)$/)
+  if (process.platform === 'win32' && gitBashMatch) {
+    const driveLetter = gitBashMatch[1].toUpperCase()
+    const restPath = gitBashMatch[2].replace(/\//g, '\\')
+    return `${driveLetter}:\\${restPath}`
   }
   // 返回原始路径（可能已经是正确格式）
   return path.resolve(inputPath)
